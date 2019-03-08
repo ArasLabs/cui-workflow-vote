@@ -1,0 +1,20 @@
+﻿<AML>
+ <Item type="CommandBarSectionItem" id="FB1F2429081E4F8F9F3F98F2E1821CDB" action="add">
+  <action>Add</action>
+  <related_id keyed_name="aras_labs.twt_workflow_vote" type="CommandBarItem">
+   <Item type="CommandBarButton" id="2598E7BD7824460CB347480083A55CA1" action="add">
+    <additional_data>{ "cui_disabled": "true" }</additional_data>
+    <image>../Images/InBasketTask.svg</image>
+    <include_events>UpdateTearOffWindowState</include_events>
+    <label xml:lang="en">Workflow Vote</label>
+    <on_click_handler keyed_name="labs_WorkflowDialog" type="Method">962EAF8837024D0693B3FE46A3CBB63A</on_click_handler>
+    <on_init_handler keyed_name="labs_init_WorkflowVote" type="Method">9A455B3D53194389AF474EC6D9C7C8ED</on_init_handler>
+    <tooltip_template xml:lang="en">Workflow Vote</tooltip_template>
+    <name>aras_labs.twt_workflow_vote</name>
+   </Item>
+  </related_id>
+  <role keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</role>
+  <sort_order>520</sort_order>
+  <source_id keyed_name="com.aras.innovator.cui_default.twt_normal" type="CommandBarSection">8D2C120D9A65414690A0E8D001A8FBC9</source_id>
+ </Item>
+</AML>

@@ -1,0 +1,35 @@
+﻿<AML>
+ <Item type="Method" id="9A455B3D53194389AF474EC6D9C7C8ED" action="add">
+  <execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to>
+  <method_code><![CDATA[if (inArgs.isReinit) {
+
+    // see if this item's itemtype has a workflow, if not then disable this button
+    if (parent.itemTypeID) {
+        var wf = aras.IomInnovator.newItem("Allowed Workflow", "get");
+        wf.setProperty("source_id", parent.itemTypeID);
+        wf = wf.apply();
+
+        if (wf.isError()) {
+            return {
+                'cui_disabled': true
+            };
+        }
+    }
+
+    // button should only be enabled if the item is unlocked
+    if (Object.getOwnPropertyNames(inArgs.eventState).length === 0) {
+        var states = aras.evalMethod('cui_reinit_calc_tearoff_states');
+        var keys = Object.keys(states);
+        for (var i = 0; i < keys.length; i++) {
+            inArgs.eventState[keys[i]] = states[keys[i]];
+        }
+    }
+    return {
+        'cui_disabled': !inArgs.eventState.isLock
+    };
+}
+return {};]]></method_code>
+  <method_type>JavaScript</method_type>
+  <name>labs_init_WorkflowVote</name>
+ </Item>
+</AML>

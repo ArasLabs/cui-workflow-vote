@@ -1,0 +1,3 @@
+<imports>
+  <package name="aras.labs.cui.workflow_vote" path="workflow_vote\Import" />
+</imports>

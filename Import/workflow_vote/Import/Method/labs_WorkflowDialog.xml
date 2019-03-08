@@ -1,0 +1,94 @@
+﻿<AML>
+ <Item type="Method" id="962EAF8837024D0693B3FE46A3CBB63A" action="add">
+  <execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to>
+  <method_code><![CDATA[// Calls a search dialog and returns the search result
+var param = {
+    aras: top.aras,
+    itemtypeName: 'InBasket Task',
+    multiselect: false,
+    type: 'SearchDialog',
+    dialogHeight: 450,
+    dialogWidth: 700,
+    resizable: true
+};
+
+var searchedItem;
+var callback = function(dlgRes) {
+    if (!dlgRes) {
+        return;
+    }
+
+    // call vote dialog
+    // get the inbasket task
+    var id = dlgRes.itemID;
+    var inbasket_task = aras.newIOMItem("Inbasket Task", "get");
+    inbasket_task.setID(id);
+    inbasket_task = inbasket_task.apply();
+
+    // get activity data
+    var aml = "<AML>";
+    aml += "    <Item type='Workflow Process' action='get' id='" + inbasket_task.getProperty("container") + "'>";
+    aml += "        <Relationships>";
+    aml += "            <Item type='Workflow Process Activity' action='get'>";
+    aml += "                <related_id>";
+    aml += "                    <Item type='Activity' action='get'>";
+    aml += "                        <name>" + inbasket_task.getProperty("name", "") + "</name>";
+    aml += "                        <Relationships>";
+    aml += "                            <Item type='Activity Assignment' action='get'>";
+    aml += "                                <Relationships>";
+    aml += "                                    <Item type='Activity Task Value' action='get'/>";
+    aml += "                                    <Item type='Activity Variable Value' action='get' />";
+    aml += "                                </Relationships>";
+    aml += "                            </Item>";
+    aml += "                            <Item type='Activity Task' action='get' />";
+    aml += "                            <Item type='Activity Variable' action='get' />";
+    aml += "                            <Item type='Workflow Process Path' action='get' related_expand='0' />";
+    aml += "                        </Relationships>";
+    aml += "                    </Item>";
+    aml += "                </related_id>";
+    aml += "            </Item>";
+    aml += "        </Relationships>";
+    aml += "    </Item>";
+    aml += "</AML>";
+
+    var workflow_process = aras.newIOMInnovator().applyAML(aml);
+
+    // set up parameters for dialog
+    var activity = workflow_process.getItemsByXPath("//Item[@type='Activity']");
+    var assignment = workflow_process.getItemsByXPath("//Item[@type='Activity Assignment']");
+
+    var activityID = activity.getID();
+    var workflow_name = workflow_process.getProperty("label", "");
+    var workflow_process_id = inbasket_task.getProperty("container", "");
+    var assignment_id = assignment.getID();
+    var item_id = inbasket_task.getProperty("item", "");
+    var params;
+    var options, callbacks;
+
+    params = {
+        aras: aras,
+        activity: activity.node,
+        wflName: workflow_name,
+        wflId: workflow_process_id,
+        assignmentId: assignment_id,
+        itemId: item_id,
+        parent: "InBasket",
+        dialogWidth: 700,
+        dialogHeight: 550,
+        resizable: true,
+        scroll: true,
+        content: "InBasket/InBasket-VoteDialog.aspx"
+    };
+
+    // call dialog
+    aras.getMainWindow().ArasModules.Dialog.show("iframe", params).promise.then();
+
+};
+
+var wnd = top.aras.getMainWindow();
+wnd = wnd === top ? wnd.main : top;
+wnd.ArasModules.Dialog.show('iframe', param).promise.then(callback);]]></method_code>
+  <method_type>JavaScript</method_type>
+  <name>labs_WorkflowDialog</name>
+ </Item>
+</AML>
